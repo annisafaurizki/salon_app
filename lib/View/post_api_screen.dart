@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:salon_app/API/register.dart';
+import 'package:salon_app/API/auth.dart';
 import 'package:salon_app/Extension/navigator.dart';
 import 'package:salon_app/Model/register_model.dart';
 import 'package:salon_app/Share_Preferences/share_preferences.dart';
@@ -16,7 +16,7 @@ class _PostApiScreenState extends State<PostApiScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  RegisterUserModel? user;
+  RegisterModel? user;
   String? errorMessage;
   bool isVisibility = false;
   bool isLoading = false;

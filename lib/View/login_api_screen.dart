@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:salon_app/API/register.dart';
+import 'package:salon_app/API/auth.dart';
 import 'package:salon_app/Extension/navigator.dart';
-import 'package:salon_app/Model/register_model.dart';
+import 'package:salon_app/Model/login_model.dart';
 import 'package:salon_app/Share_Preferences/share_preferences.dart';
 import 'package:salon_app/View/home_api.dart';
 import 'package:salon_app/View/post_api_screen.dart';
@@ -17,7 +17,7 @@ class LoginAPIScreen extends StatefulWidget {
 class _LoginAPIScreenState extends State<LoginAPIScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  RegisterUserModel? user;
+  LoginModel? user;
   String? errorMessage;
   bool isLoading = false;
   bool isVisibility = false;
