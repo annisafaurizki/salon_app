@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:salon_app/API/profile_service.dart';
-import 'package:salon_app/Model/profile_model.dart';
+import 'package:app_salon_projek/API/profile_service.dart';
+import 'package:app_salon_projek/Model/profile_model.dart';
 
 
 class HalamanUtamaDua extends StatefulWidget {

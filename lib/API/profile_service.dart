@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:salon_app/API/Endpoint/endpoint.dart';
-import 'package:salon_app/Model/profile_model.dart';
-import 'package:salon_app/Share_Preferences/share_preferences.dart';
+import 'package:app_salon_projek/API/Endpoint/endpoint.dart';
+import 'package:app_salon_projek/Model/profile_model.dart';
+import 'package:app_salon_projek/Share_Preferences/share_preferences.dart';
 
 class ProfileService {
   static Future<ProfileModel> getProfile() async {

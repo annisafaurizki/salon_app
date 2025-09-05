@@ -1,5 +1,6 @@
+import 'package:app_salon_projek/View/dashboard.dart';
 import 'package:flutter/material.dart';
-import 'package:salon_app/View/dashboard.dart';
+
 
 
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:salon_app/API/auth.dart';
-import 'package:salon_app/Extension/navigator.dart';
-import 'package:salon_app/Model/register_model.dart';
-import 'package:salon_app/Share_Preferences/share_preferences.dart';
-import 'package:salon_app/View/login_api_screen.dart';
+import 'package:app_salon_projek/API/auth.dart';
+import 'package:app_salon_projek/Extension/navigator.dart';
+import 'package:app_salon_projek/Model/register_model.dart';
+import 'package:app_salon_projek/Share_Preferences/share_preferences.dart';
+import 'package:app_salon_projek/View/login_api_screen.dart';
 
 class PostApiScreen extends StatefulWidget {
   const PostApiScreen({super.key});
