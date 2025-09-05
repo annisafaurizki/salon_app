@@ -1,16 +1,16 @@
 import 'package:app_salon_projek/Model/get_layanan_model.dart';
 import 'package:flutter/material.dart';
 
-class DetailBooking extends StatefulWidget {
+class DetailLayanan extends StatefulWidget {
   final DataLayanan isiLayanan;
 
-  const DetailBooking({super.key, required this.isiLayanan});
+  const DetailLayanan({super.key, required this.isiLayanan});
 
   @override
-  State<DetailBooking> createState() => _DetailBookingState();
+  State<DetailLayanan> createState() => _DetailLayananState();
 }
 
-class _DetailBookingState extends State<DetailBooking> {
+class _DetailLayananState extends State<DetailLayanan> {
   @override
   Widget build(BuildContext context) {
     final isiLayanan = widget.isiLayanan; // supaya gampang dipanggil
@@ -40,10 +40,7 @@ class _DetailBookingState extends State<DetailBooking> {
             // NAMA SERVICE
             Text(
               isiLayanan.name,
-              style: const TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 10),
@@ -76,8 +73,10 @@ class _DetailBookingState extends State<DetailBooking> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.pink,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 50,
+                    vertical: 16,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -87,7 +86,7 @@ class _DetailBookingState extends State<DetailBooking> {
                   style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

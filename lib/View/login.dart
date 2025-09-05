@@ -1,39 +1,38 @@
-import 'package:flutter/material.dart';
 import 'package:app_salon_projek/API/auth.dart';
 import 'package:app_salon_projek/Extension/navigator.dart';
-import 'package:app_salon_projek/Model/register_model.dart';
+import 'package:app_salon_projek/Model/login_model.dart';
 import 'package:app_salon_projek/Share_Preferences/share_preferences.dart';
-import 'package:app_salon_projek/View/login_api_screen.dart';
+import 'package:app_salon_projek/view/layanan/halaman_layanan.dart';
+import 'package:app_salon_projek/view/register.dart';
+import 'package:flutter/material.dart';
 
-class PostApiScreen extends StatefulWidget {
-  const PostApiScreen({super.key});
-  static const id = '/post_api_screen';
+class LoginAPIScreen extends StatefulWidget {
+  const LoginAPIScreen({super.key});
+  static const id = "/login_api";
   @override
-  State<PostApiScreen> createState() => _PostApiScreenState();
+  State<LoginAPIScreen> createState() => _LoginAPIScreenState();
 }
 
-class _PostApiScreenState extends State<PostApiScreen> {
+class _LoginAPIScreenState extends State<LoginAPIScreen> {
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  RegisterModel? user;
+  LoginModel? user;
   String? errorMessage;
-  bool isVisibility = false;
   bool isLoading = false;
+  bool isVisibility = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: Stack(children: [buildBackground(), buildLayer()]));
   }
 
-  void registerUser() async {
+  void loginUser() async {
     setState(() {
       isLoading = true;
       errorMessage = null;
     });
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
-    final name = nameController.text.trim();
-    if (email.isEmpty || password.isEmpty || name.isEmpty) {
+    if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Email, Password, dan Nama tidak boleh kosong"),
@@ -44,19 +43,25 @@ class _PostApiScreenState extends State<PostApiScreen> {
       return;
     }
     try {
-      final result = await AuthenticationAPI.registerUser(
+      final result = await AuthenticationAPI.loginUser(
         email: email,
         password: password,
-        name: name,
       );
       setState(() {
         user = result;
       });
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text("Pendaftaran berhasil")));
-      PreferenceHandler.saveToken(user?.data?.token.toString() ?? "");
+      ).showSnackBar(const SnackBar(content: Text("Berhasil Masuk!!")));
+      PreferenceHandler.saveToken(user?.data.token.toString() ?? "");
       print(user?.toJson());
+
+      Future.delayed(Duration(milliseconds: 1500), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HalamanDashboard()),
+        );
+      });
     } catch (e) {
       print(e);
       setState(() {
@@ -89,8 +94,13 @@ class _PostApiScreenState extends State<PostApiScreen> {
             // crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Register API",
-                style: TextStyle(fontSize: 50, fontFamily: 'Allura',),
+                "Welcome Back",
+                style: TextStyle(fontSize: 50, fontFamily: 'Allura'),
+              ),
+              height(12),
+              Text(
+                "Login API to access your account",
+                // style: TextStyle(fontSize: 14, color: AppColor.gray88),
               ),
               height(24),
               buildTitle("Email Address"),
@@ -99,13 +109,7 @@ class _PostApiScreenState extends State<PostApiScreen> {
                 hintText: "Enter your email",
                 controller: emailController,
               ),
-              height(16),
-              buildTitle("Name"),
-              height(12),
-              buildTextField(
-                hintText: "Enter your name",
-                controller: nameController,
-              ),
+
               height(16),
               buildTitle("Password"),
               height(12),
@@ -140,7 +144,7 @@ class _PostApiScreenState extends State<PostApiScreen> {
                 height: 56,
                 child: ElevatedButton(
                   onPressed: () {
-                    registerUser();
+                    loginUser();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 245, 200, 245),
@@ -148,53 +152,39 @@ class _PostApiScreenState extends State<PostApiScreen> {
                       borderRadius: BorderRadius.circular(6),
                     ),
                   ),
-                  child: isLoading
-                      ? CircularProgressIndicator()
-                      : Text(
-                          "Daftar",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: const Color.fromARGB(255, 9, 9, 9),
-                          ),
-                        ),
-                ),
-              ),
-              height(16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(right: 8),
-                      height: 1,
-                      color: Colors.white,
+                  child: Text(
+                    "Login",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: const Color.fromARGB(255, 26, 25, 25),
                     ),
                   ),
-                   
-                ],
+                ),
               ),
 
-              height(16),
-             
               height(16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     "Don't have an account?",
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                    // style: TextStyle(fontSize: 12, color: AppColor.gray88),
                   ),
                   TextButton(
                     onPressed: () {
-                      context.push(LoginAPIScreen());
+                      context.push(PostApiScreen());
+                      // Navigator.pushReplacement(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => MeetEmpatA()),
+                      // );
                     },
                     child: Text(
-                      "Login",
+                      "Sign Up",
                       style: TextStyle(
-                        color: const Color.fromARGB(255, 91, 38, 71),
+                        // color: AppColor.blueButton,
                         fontSize: 12,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -213,10 +203,10 @@ class _PostApiScreenState extends State<PostApiScreen> {
       width: double.infinity,
       decoration: const BoxDecoration(
         // image: DecorationImage(
-        //   image: AssetImage("assets/images/wallpaper2.jpg"),
+        //   image: AssetImage("assets/images/wallpaper.jpg"),
         //   fit: BoxFit.cover,
         // ),
-        color: Colors.white
+        color: Colors.white,
       ),
     );
   }
