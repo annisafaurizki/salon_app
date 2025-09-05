@@ -18,11 +18,8 @@ class ProfileService {
         "Authorization": "Bearer $token",
       },
     );
+  print(response.body);
 
-    // Debug
-    // print("GET ${url.toString()}");
-    // print("GET status: ${response.statusCode}");
-    // print("GET body: ${response.body}");
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final json = jsonDecode(response.body);
@@ -34,8 +31,6 @@ class ProfileService {
     }
   }
 
-  /// Update profil. Banyak backend hanya menerima field yang diubah (mis. name & email).
-  /// Jika server membalas 204/empty body, kita re-fetch profile agar state terbaru terbaca.
   static Future<ProfileModel> updateData({
     required String name,
     required String email,
@@ -62,18 +57,18 @@ class ProfileService {
     // print("PUT body: ${response.body}");
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      // Kalau server memberi body JSON profile, parse langsung.
+    
       if (response.body.isNotEmpty) {
         try {
           final json = jsonDecode(response.body);
           return ProfileModel.fromJson(json);
-          // ignore: avoid_catches_without_on_clauses
+          
         } catch (_) {
-          // Jika struktur tidak sesuai ProfileModel, fallback re-fetch.
+          
           return await getProfile();
         }
       } else {
-        // 204 No Content atau body kosong -> ambil ulang profil
+        
         return await getProfile();
       }
     } else {

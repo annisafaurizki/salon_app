@@ -1,9 +1,10 @@
+import 'package:app_salon_projek/View/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:app_salon_projek/API/auth.dart';
 import 'package:app_salon_projek/Extension/navigator.dart';
 import 'package:app_salon_projek/Model/login_model.dart';
 import 'package:app_salon_projek/Share_Preferences/share_preferences.dart';
-import 'package:app_salon_projek/View/home_api.dart';
+
 import 'package:app_salon_projek/View/post_api_screen.dart';
 
 
@@ -60,7 +61,7 @@ class _LoginAPIScreenState extends State<LoginAPIScreen> {
       Future.delayed(Duration(milliseconds: 1500), () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HalamanUtamaDua()),
+          MaterialPageRoute(builder: (context) => HalamanDashboard()),
         );
       });
     } catch (e) {

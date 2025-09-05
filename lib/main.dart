@@ -1,4 +1,7 @@
-import 'package:app_salon_projek/View/dashboard.dart';
+
+import 'package:app_salon_projek/View/bottom_nav.dart';
+import 'package:app_salon_projek/View/login_api_screen.dart';
+
 import 'package:flutter/material.dart';
 
 
@@ -17,7 +20,7 @@ class MyApp extends StatelessWidget {
       title: "Ms. Beauty",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true),
-      home: const HalamanDashboard()
+      home: BottomNav()
     );
   }
 }

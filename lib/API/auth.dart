@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:app_salon_projek/API/Endpoint/endpoint.dart';
+
 import 'package:app_salon_projek/Model/login_model.dart';
 import 'package:app_salon_projek/Model/register_model.dart';
 import 'package:app_salon_projek/Share_Preferences/share_preferences.dart';
@@ -40,8 +41,12 @@ class AuthenticationAPI {
       headers: {"Accept": "application/json"},
     );
     if (response.statusCode == 200) {
-      PreferenceHandler.saveToken(token ?? "");
-      return LoginModel.fromJson(json.decode(response.body));
+      final data = LoginModel.fromJson(json.decode(response.body));
+      await PreferenceHandler.saveToken(data.data.token);
+      await PreferenceHandler.saveLogin();
+      return data;
+      // PreferenceHandler.saveToken(token ?? "");
+      // return LoginModel.fromJson(json.decode(response.body));
     } else {
       final error = json.decode(response.body);
       throw Exception(error["message"] ?? "Register gagal");
