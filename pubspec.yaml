@@ -63,20 +63,10 @@ flutter:
   assets:
     - assets/images/
     - assets/fonts/
-    - assets/images/animations/Failed.json
-    - assets/images/animations/Loading Success Fail.json
-    - assets/images/animations/Check Mark.json
-    - assets/images/pokemon.jpg
-    - assets/animations/Pokeball loading animation.json
-    - assets/images/cardpoke.jpg
-    - assets/images/cardframe.png
-    - assets/images/logotulisan.png
-    - assets/images/wallpaper.jpg
-    - assets/images/wallpaper2.jpg
-    - assets/images/dashboar_salon.jpg
-    - assets/images/poster_dashboard.jpg
-    - assets/images/rambut1.jpg
-    - assets/images/pixiecut.jpg
+    - assets/images/backgroundLogin.jpg
+    - assets/images/backgroundregister.jpg
+    - assets/images/glowies_homepage.png
+    - assets/images/Glowiessplash.png
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

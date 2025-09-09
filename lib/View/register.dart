@@ -69,137 +69,112 @@ class _PostApiScreenState extends State<PostApiScreen> {
       setState(() {});
       isLoading = false;
     }
-    // final user = User(email: email, password: password, name: name);
-    // await DbHelper.registerUser(user);
-    // Future.delayed(const Duration(seconds: 1)).then((value) {
-    //   isLoading = false;
-    //   ScaffoldMessenger.of(
-    //     context,
-    //   ).showSnackBar(const SnackBar(content: Text("Pendaftaran berhasil")));
-    // });
+
   }
 
   SafeArea buildLayer() {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            // crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                "Register API",
-                style: TextStyle(fontSize: 50, fontFamily: 'Allura'),
-              ),
-              height(24),
-              buildTitle("Email Address"),
-              height(12),
-              buildTextField(
-                hintText: "Enter your email",
-                controller: emailController,
-              ),
-              height(16),
-              buildTitle("Name"),
-              height(12),
-              buildTextField(
-                hintText: "Enter your name",
-                controller: nameController,
-              ),
-              height(16),
-              buildTitle("Password"),
-              height(12),
-              buildTextField(
-                hintText: "Enter your password",
-                isPassword: true,
-                controller: passwordController,
-              ),
-              height(12),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => MeetSebelas()),
-                    // );
-                  },
-                  child: Text(
-                    "Forgot Password?",
-                    style: TextStyle(
-                      fontSize: 12,
-                      // color: AppColor.orange,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+        padding: const EdgeInsets.all(24.0),
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 60,),
+                Text(
+                  "Selamat Datang",
+                  style: TextStyle(fontSize: 50, fontFamily: 'Allura'),
                 ),
-              ),
-              height(24),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: () {
-                    registerUser();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 245, 200, 245),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
-                  child: isLoading
-                      ? CircularProgressIndicator()
-                      : Text(
-                          "Daftar",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: const Color.fromARGB(255, 9, 9, 9),
-                          ),
-                        ),
+                Text("Mari bergabung untuk menikmati perawatan diri"),
+                height(24),
+                buildTitle("Email Address"),
+                height(12),
+                buildTextField(
+                  hintText: "Enter your email",
+                  controller: emailController,
                 ),
-              ),
-              height(16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(right: 8),
-                      height: 1,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
+                height(16),
+                buildTitle("Name"),
+                height(12),
+                buildTextField(
+                  hintText: "Enter your name",
+                  controller: nameController,
+                ),
+                height(16),
+                buildTitle("Password"),
+                height(12),
+                buildTextField(
+                  hintText: "Enter your password",
+                  isPassword: true,
+                  controller: passwordController,
+                ),
+                height(12),
 
-              height(16),
-
-              height(16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Don't have an account?",
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
-                  ),
-                  TextButton(
+                height(24),
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
                     onPressed: () {
-                      context.push(LoginAPIScreen());
+                      registerUser();
                     },
-                    child: Text(
-                      "Login",
-                      style: TextStyle(
-                        color: const Color.fromARGB(255, 91, 38, 71),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w900,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 245, 200, 245),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
                       ),
                     ),
+                    child: isLoading
+                        ? CircularProgressIndicator()
+                        : Text(
+                            "Daftar",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: const Color.fromARGB(255, 9, 9, 9),
+                            ),
+                          ),
                   ),
-                ],
-              ),
-            ],
+                ),
+                height(16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.only(right: 8),
+                        height: 1,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+          
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Sudah punya akun?",
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        context.push(LoginAPIScreen());
+                      },
+                      child: Text(
+                        "Masuk",
+                        style: TextStyle(
+                          color: const Color.fromARGB(255, 91, 38, 71),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -211,11 +186,11 @@ class _PostApiScreenState extends State<PostApiScreen> {
       height: double.infinity,
       width: double.infinity,
       decoration: const BoxDecoration(
-        // image: DecorationImage(
-        //   image: AssetImage("assets/images/wallpaper2.jpg"),
-        //   fit: BoxFit.cover,
-        // ),
-        color: Colors.white,
+        image: DecorationImage(
+          image: AssetImage("assets/images/backgroundregister.jpg"),
+          fit: BoxFit.cover,
+        ),
+        
       ),
     );
   }

@@ -1,7 +1,14 @@
 import 'package:app_salon_projek/Extension/navigator.dart';
-import 'package:app_salon_projek/Model/get_layanan_model.dart';
-import 'package:app_salon_projek/view/booking/booking_layanan.dart';
+import 'package:app_salon_projek/model/layanan/get_layanan_model.dart';
+import 'package:app_salon_projek/view/booking/form_booking.dart';
 import 'package:flutter/material.dart';
+
+class GlowiesColors {
+  static const Color roseGold = Color(0xFFB76E79);
+  static const Color warmGold = Color(0xFFE5B39B);
+  static const Color offWhite = Color(0xFFF0F0F0);
+  static const Color lightGray = Color(0xFFE0E0E0);
+}
 
 class DetailLayanan extends StatefulWidget {
   final DataLayanan isiLayanan;
@@ -18,7 +25,7 @@ class _DetailLayananState extends State<DetailLayanan> {
     final isiLayanan = widget.isiLayanan;
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: GlowiesColors.offWhite,
       appBar: AppBar(
         title: const Text(
           "Detail Layanan",
@@ -46,7 +53,7 @@ class _DetailLayananState extends State<DetailLayanan> {
 
             const SizedBox(height: 20),
 
-            // NAMA SERVICE
+            
             Text(
               isiLayanan.name ?? "",
               style: const TextStyle(
@@ -58,7 +65,7 @@ class _DetailLayananState extends State<DetailLayanan> {
 
             const SizedBox(height: 8),
 
-            // ⭐ Rating Dummy
+            
             Row(
               children: const [
                 Icon(Icons.star, color: Colors.amber, size: 20),
@@ -76,7 +83,7 @@ class _DetailLayananState extends State<DetailLayanan> {
 
             const SizedBox(height: 16),
 
-            // DESKRIPSI
+            
             Text(
               isiLayanan.description ?? "Tidak ada deskripsi layanan",
               style: const TextStyle(
@@ -88,10 +95,10 @@ class _DetailLayananState extends State<DetailLayanan> {
 
             const SizedBox(height: 24),
 
-            // INFORMASI TAMBAHAN
+            
             Row(
               children: [
-                const Icon(Icons.timer, color: Colors.pink, size: 20),
+                const Icon(Icons.timer, color: GlowiesColors.roseGold, size: 20), // Warna baru
                 const SizedBox(width: 6),
                 Text(
                   "Estimasi durasi: 45 menit",
@@ -102,7 +109,7 @@ class _DetailLayananState extends State<DetailLayanan> {
 
             const SizedBox(height: 20),
 
-            // HARGA DALAM CARD
+            
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -131,7 +138,7 @@ class _DetailLayananState extends State<DetailLayanan> {
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
-                      color: Colors.pink,
+                      color: GlowiesColors.roseGold,
                     ),
                   ),
                 ],
@@ -140,7 +147,7 @@ class _DetailLayananState extends State<DetailLayanan> {
 
             const SizedBox(height: 30),
 
-            // SECTION KENAPA MEMILIH
+            
             const Text(
               "Kenapa memilih layanan ini?",
               style: TextStyle(
@@ -158,14 +165,16 @@ class _DetailLayananState extends State<DetailLayanan> {
 
             const SizedBox(height: 30),
 
-            // TOMBOL BOOKING
+            
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  context.push(BookingPage(layanan: widget.isiLayanan));
+                  context.push(BookingFormPage(serviceId: isiLayanan.id!,
+                                     serviceName: isiLayanan.name ?? "Layanan",
+                                     servicePrice: isiLayanan.price ?? "0",));
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.pink,
+                  backgroundColor: GlowiesColors.roseGold, // Warna baru
                   padding: const EdgeInsets.symmetric(
                     horizontal: 50,
                     vertical: 16,

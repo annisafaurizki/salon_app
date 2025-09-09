@@ -1,319 +1,136 @@
+import 'package:app_salon_projek/view/login.dart';
 import 'package:flutter/material.dart';
+import 'package:app_salon_projek/api/profile_service.dart';
+import 'package:app_salon_projek/model/profile_model.dart';
+import 'package:app_salon_projek/share_preferences/share_preferences.dart';
 
-void main() {
-  runApp(const MyApp());
+
+class GlowiesColors {
+  static const Color roseGold = Color(0xFFB76E79);
+  static const Color offWhite = Color(0xFFF0F0F0);
+  static const Color darkText = Color(0xFF333333);
+  static const Color lightGray = Color(0xFFE0E0E0);
+  static const Color warmGold = Color(0xFFE5B39B);
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class HalamanUtamaDua extends StatefulWidget {
+  const HalamanUtamaDua({super.key});
+  static const id = "/halaman_utama_dua";
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Salon App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      home: const HomeScreen(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
+  State<HalamanUtamaDua> createState() => _HalamanUtamaDuaState();
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class _HalamanUtamaDuaState extends State<HalamanUtamaDua> {
+  ProfileModel? _dataProfile;
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  Future<void> _ambilData() async {
+    try {
+      final ambilData = await ProfileService.getProfile();
+      if (!mounted) return;
+      setState(() {
+        _dataProfile = ambilData;
+        _isLoading = false;
+        _errorMessage = null;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Data Berhasil Diambil")),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _ambilData();
+  }
+
+  void _logout() async {
+    await PreferenceHandler.removeToken();
+    await PreferenceHandler.removeLogin();
+    if (!mounted) return;
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      LoginAPIScreen.id,
+      (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header dengan lokasi
-            _buildHeader(),
-            
-            // Banner promo
-            _buildPromoBanner(),
-            
-            // Bagian services
-            _buildServicesSection(),
-            
-            // Nearby salons section
-            _buildNearbySalons(),
-          ],
-        ),
+      backgroundColor: GlowiesColors.offWhite,
+      appBar: AppBar(
+        title: const Text("Profil Akun"),
+        centerTitle: true,
+        backgroundColor: GlowiesColors.roseGold,
+        elevation: 0,
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 50, 16, 16),
-      color: Colors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.location_on, color: Colors.pink),
-              const SizedBox(width: 8),
-              const Text(
-                "Location",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(Icons.notifications_none),
-                onPressed: () {},
-              ),
-            ],
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _errorMessage != null
+              ? _buildError()
+              : _dataProfile == null
+                  ? const Center(child: Text("Tidak ada data"))
+                  : _buildProfile(),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16),
+        child: ElevatedButton(
+          onPressed: _logout,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: GlowiesColors.roseGold,
+            minimumSize: const Size(double.infinity, 48),
           ),
-          const SizedBox(height: 8),
-          const Text(
-            "Lakewood, California",
+          child: Text(
+            "Logout",
             style: TextStyle(
-              fontSize: 20,
               fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: GlowiesColors.darkText,
             ),
           ),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: const TextField(
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: "Enter address or city name",
-                icon: Icon(Icons.search, color: Colors.grey),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPromoBanner() {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFE4E6),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Morning Special!",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  "Get 20% Off",
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  "on All Halfcuts Between 1-12",
-                  style: TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.pink,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  child: const Text("Book Now"),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 16),
-          Image.asset(
-            'assets/salon_promo.png', // Ganti dengan gambar Anda
-            width: 100,
-            height: 100,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildServicesSection() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Services",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildServiceItem("Hair Cut", Icons.cut),
-              _buildServiceItem("Hair Styling", Icons.style),
-              _buildServiceItem("Nail Art", Icons.brush),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildServiceItem(String title, IconData icon) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.pink[50],
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: Colors.pink),
         ),
-        const SizedBox(height: 8),
-        Text(
-          title,
-          style: const TextStyle(fontWeight: FontWeight.w500),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNearbySalons() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Nearby Salons",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: const Text(
-                  "View on Map",
-                  style: TextStyle(color: Colors.pink),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _buildSalonCard(
-            "Hair Avenue",
-            "2 km",
-            "Lakewood, California",
-            "4.7 (312)",
-            "assets/hair_avenue.jpg", // Ganti dengan gambar Anda
-          ),
-          const SizedBox(height: 16),
-          _buildSalonCard(
-            "Practical Salons",
-            "3 km",
-            "Boldings",
-            "4.5 (287)",
-            "assets/practical_salons.jpg", // Ganti dengan gambar Anda
-          ),
-        ],
       ),
     );
   }
 
-  Widget _buildSalonCard(String name, String distance, String location, String rating, String imagePath) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
+  Widget _buildError() {
+    return Center(
       child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                imagePath,
-                width: 80,
-                height: 80,
-                fit: BoxFit.cover,
-              ),
+            Icon(Icons.error_outline, size: 48, color: GlowiesColors.roseGold),
+            const SizedBox(height: 12),
+            Text(
+              _errorMessage!,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, color: GlowiesColors.roseGold),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    distance,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    location,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(Icons.star, color: Colors.amber, size: 16),
-                      const SizedBox(width: 4),
-                      Text(
-                        rating,
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ],
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _isLoading = true;
+                  _errorMessage = null;
+                });
+                _ambilData();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: GlowiesColors.roseGold,
               ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.favorite_border, color: Colors.grey),
-              onPressed: () {},
+              child: const Text("Coba Lagi"),
             ),
           ],
         ),
@@ -321,27 +138,146 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home, color: Colors.pink),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.map_outlined),
-          label: 'View on Map',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.favorite_border),
-          label: 'Favorites',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person_outline),
-          label: 'Profile',
-        ),
-      ],
+  Widget _buildProfile() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Avatar & Name
+          Center(
+            child: CircleAvatar(
+              radius: 50,
+              backgroundColor: GlowiesColors.roseGold.withOpacity(0.7),
+              child: Text(
+                _dataProfile!.data.name.isNotEmpty
+                    ? _dataProfile!.data.name[0].toUpperCase()
+                    : "?",
+                style: const TextStyle(fontSize: 40, color: Colors.white),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          Center(
+            child: Text(
+              _dataProfile!.data.name,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: GlowiesColors.darkText,
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+
+          Center(
+            child: Text(
+              _dataProfile!.data.email,
+              style: TextStyle(
+                fontSize: 16,
+                color: GlowiesColors.darkText.withOpacity(0.7),
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 40),
+
+          // Edit Data Button
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: ElevatedButton(
+              onPressed: () => _showEditDialog(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: GlowiesColors.roseGold,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                "Edit Data",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black26),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditDialog() {
+    final nameController = TextEditingController(text: _dataProfile!.data.name);
+    final emailController = TextEditingController(text: _dataProfile!.data.email);
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Edit Data Profil'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Nama'),
+              ),
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(labelText: 'Email'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Batal'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(dialogContext).pop();
+                setState(() {
+                  _isLoading = true;
+                });
+
+                try {
+                  final result = await ProfileService.updateData(
+                    name: nameController.text,
+                    email: emailController.text,
+                  );
+
+                  if (!mounted) return;
+                  setState(() {
+                    _dataProfile = result;
+                    _isLoading = false;
+                  });
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Perubahan berhasil disimpan!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } catch (e) {
+                  if (!mounted) return;
+                  setState(() {
+                    _isLoading = false;
+                  });
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Gagal menyimpan perubahan: $e'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              child: const Text('Simpan'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

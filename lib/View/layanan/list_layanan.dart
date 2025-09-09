@@ -1,9 +1,16 @@
 import 'package:app_salon_projek/API/layanan_service.dart';
 import 'package:app_salon_projek/Extension/navigator.dart';
-import 'package:app_salon_projek/Model/get_layanan_model.dart';
+import 'package:app_salon_projek/model/layanan/get_layanan_model.dart';
 import 'package:app_salon_projek/view/layanan/add_layanan.dart';
 import 'package:app_salon_projek/view/layanan/detail_layanan.dart';
 import 'package:flutter/material.dart';
+
+class GlowiesColors {
+  static const Color roseGold = Color(0xFFB76E79);
+  static const Color warmGold = Color(0xFFE5B39B);
+  static const Color offWhite = Color(0xFFF0F0F0);
+  static const Color lightGray = Color(0xFFE0E0E0);
+}
 
 class HalamanDashboard extends StatefulWidget {
   const HalamanDashboard({super.key});
@@ -14,7 +21,6 @@ class HalamanDashboard extends StatefulWidget {
 }
 
 class _HalamanDashboardState extends State<HalamanDashboard> {
-  final int _currentIndex = 0;
   late Future<GetLayanan> futureService;
 
   @override
@@ -26,10 +32,10 @@ class _HalamanDashboardState extends State<HalamanDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100], // 🎨 light grey background
+      backgroundColor: GlowiesColors.offWhite, 
       appBar: AppBar(
         title: const Text(
-          "Salon Services",
+          "Perawatan Rambut",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
         ),
         backgroundColor: Colors.white,
@@ -41,24 +47,13 @@ class _HalamanDashboardState extends State<HalamanDashboard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Judul
-            const Text(
-              "Our Services",
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // FutureBuilder daftar layanan
             FutureBuilder<GetLayanan>(
               future: AuthenticationAPIServices.getService(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
-                    child: CircularProgressIndicator(color: Colors.pink),
+                    child: CircularProgressIndicator(
+                        color: GlowiesColors.roseGold), 
                   );
                 } else if (snapshot.hasError) {
                   return Center(
@@ -107,9 +102,10 @@ class _HalamanDashboardState extends State<HalamanDashboard> {
                             child: Container(
                               height: 50,
                               width: 50,
-                              color: Colors.grey[200],
+                              color: GlowiesColors.lightGray, 
                               child: const Icon(Icons.spa,
-                                  color: Colors.pink, size: 28),
+                                  color: GlowiesColors.roseGold, 
+                                  size: 28),
                             ),
                           ),
                           title: Text(
@@ -123,14 +119,14 @@ class _HalamanDashboardState extends State<HalamanDashboard> {
                           subtitle: Text(
                             "Rp ${s.price}",
                             style: const TextStyle(
-                              color: Colors.pink,
+                              color: GlowiesColors.roseGold, 
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           trailing: const Icon(
                             Icons.arrow_forward_ios,
                             size: 18,
-                            color: Colors.black54,
+                            color: GlowiesColors.lightGray, 
                           ),
                           onTap: () {
                             context.push(DetailLayanan(isiLayanan: s));
@@ -156,8 +152,8 @@ class _HalamanDashboardState extends State<HalamanDashboard> {
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        AuthenticationAPIServices
-                                            .deleteService(s.id ?? 0);
+                                        AuthenticationAPIServices.deleteService(
+                                            s.id ?? 0);
                                         Navigator.of(context).pop();
                                         setState(() {});
                                       },
@@ -182,7 +178,7 @@ class _HalamanDashboardState extends State<HalamanDashboard> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.pink,
+        backgroundColor: GlowiesColors.roseGold,
         onPressed: () {
           context.push((TambahLayanan())).then((value) {
             setState(() {});

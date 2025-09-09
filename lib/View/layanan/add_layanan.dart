@@ -6,6 +6,19 @@ import 'package:app_salon_projek/view/layanan/list_layanan.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+
+class GlowiesColors {
+  static const Color roseGold = Color(0xFFB76E79);
+  static const Color offWhite = Color(0xFFF0F0F0);
+  static const Color darkText = Color(0xFF333333);
+  static const Color lightGray = Color(0xFFE0E0E0);
+  static const Color warmGold = Color(0xFFE5B39B);
+  static const Color confirmedGreen = Color(0xFF6B9F8D);
+  static const Color cancelledRed = Color(0xFFE07A7A);
+  static const Color pendingOrange = Color(0xFFE0C47A);
+  static const Color completedBlue = Color(0xFF7A9FE0);
+}
+
 class TambahLayanan extends StatefulWidget {
   const TambahLayanan({super.key});
 
@@ -28,7 +41,9 @@ class _TambahLayananState extends State<TambahLayanan> {
   Future<void> _submitForm() async {
     if (employeePhoto == null || servicePhoto == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Foto karyawan atau layanan harus diisi")),
+        const SnackBar(
+            content: Text("Foto karyawan atau layanan harus diisi"),
+            backgroundColor: GlowiesColors.cancelledRed),
       );
       return;
     }
@@ -50,12 +65,16 @@ class _TambahLayananState extends State<TambahLayanan> {
 
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(result.message)));
+      ).showSnackBar(SnackBar(
+          content: Text(result.message),
+          backgroundColor: GlowiesColors.confirmedGreen));
       context.pop(HalamanDashboard());
     } catch (e) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Gagal menambahkan Layanan: $e")));
+      ).showSnackBar(SnackBar(
+          content: Text("Gagal menambahkan Layanan: $e"),
+          backgroundColor: GlowiesColors.cancelledRed));
     } finally {
       setState(() {
         _isLoading = false;
@@ -66,16 +85,38 @@ class _TambahLayananState extends State<TambahLayanan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Tambah Layanan")),
+      backgroundColor: GlowiesColors.offWhite,
+      appBar: AppBar(
+        title: const Text(
+          "Tambah Layanan",
+          style: TextStyle(
+            color: GlowiesColors.darkText,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 1,
+        foregroundColor: GlowiesColors.darkText,
+      ),
       body: Padding(
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
               TextFormField(
                 controller: nameController,
-                decoration: InputDecoration(labelText: "Nama Layanan"),
+                style: const TextStyle(color: GlowiesColors.darkText),
+                decoration: InputDecoration(
+                  labelText: "Nama Layanan",
+                  labelStyle: const TextStyle(color: GlowiesColors.roseGold),
+                  enabledBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: GlowiesColors.lightGray),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: GlowiesColors.roseGold),
+                  ),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Nama tidak boleh kosong";
@@ -83,9 +124,20 @@ class _TambahLayananState extends State<TambahLayanan> {
                   return null;
                 },
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 controller: descriptionController,
-                decoration: InputDecoration(labelText: "Deskripsi Layanan"),
+                style: const TextStyle(color: GlowiesColors.darkText),
+                decoration: InputDecoration(
+                  labelText: "Deskripsi Layanan",
+                  labelStyle: const TextStyle(color: GlowiesColors.roseGold),
+                  enabledBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: GlowiesColors.lightGray),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: GlowiesColors.roseGold),
+                  ),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Deskripsi tidak boleh kosong";
@@ -93,9 +145,21 @@ class _TambahLayananState extends State<TambahLayanan> {
                   return null;
                 },
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 controller: priceController,
-                decoration: InputDecoration(labelText: "Harga"),
+                keyboardType: TextInputType.number,
+                style: const TextStyle(color: GlowiesColors.darkText),
+                decoration: InputDecoration(
+                  labelText: "Harga",
+                  labelStyle: const TextStyle(color: GlowiesColors.roseGold),
+                  enabledBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: GlowiesColors.lightGray),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: GlowiesColors.roseGold),
+                  ),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Harga tidak boleh kosong";
@@ -103,9 +167,20 @@ class _TambahLayananState extends State<TambahLayanan> {
                   return null;
                 },
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 controller: employeeNameController,
-                decoration: InputDecoration(labelText: "Nama Karyawan"),
+                style: const TextStyle(color: GlowiesColors.darkText),
+                decoration: InputDecoration(
+                  labelText: "Nama Karyawan",
+                  labelStyle: const TextStyle(color: GlowiesColors.roseGold),
+                  enabledBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: GlowiesColors.lightGray),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: GlowiesColors.roseGold),
+                  ),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Nama tidak boleh kosong";
@@ -113,52 +188,96 @@ class _TambahLayananState extends State<TambahLayanan> {
                   return null;
                 },
               ),
-              SizedBox(height: 12),
-              Text("Foto Karyawan"),
-              SizedBox(height: 8),
+              const SizedBox(height: 24),
+              const Text(
+                "Foto Karyawan",
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: GlowiesColors.darkText),
+              ),
+              const SizedBox(height: 8),
               Row(
                 children: [
-                  ElevatedButton(
+                  ElevatedButton.icon(
                     onPressed: pickEmployeePhoto,
-                    child: Text("Ambil Foto Karyawan"),
+                    icon: const Icon(Icons.add_a_photo),
+                    label: const Text("Ambil Foto"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: GlowiesColors.roseGold,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   employeePhoto != null
                       ? Image.file(
                           File(employeePhoto!.path),
-                          width: 100,
-                          height: 100,
+                          width: 80,
+                          height: 80,
                           fit: BoxFit.cover,
                         )
-                      : Text("Belum ada foto"),
+                      : const Text("Belum ada foto",
+                          style: TextStyle(color: Colors.grey)),
                 ],
               ),
-              SizedBox(height: 12),
-              Text("Foto Layanan"),
-              SizedBox(height: 8),
+              const SizedBox(height: 24),
+              const Text(
+                "Foto Layanan",
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: GlowiesColors.darkText),
+              ),
+              const SizedBox(height: 8),
               Row(
                 children: [
-                  ElevatedButton(
+                  ElevatedButton.icon(
                     onPressed: pickServicePhoto,
-                    child: Text("Ambil Foto Layanan"),
+                    icon: const Icon(Icons.add_a_photo),
+                    label: const Text("Ambil Foto"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: GlowiesColors.roseGold,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   servicePhoto != null
                       ? Image.file(
                           File(servicePhoto!.path),
-                          width: 100,
-                          height: 100,
+                          width: 80,
+                          height: 80,
                           fit: BoxFit.cover,
                         )
-                      : Text("Belum ada foto"),
+                      : const Text("Belum ada foto",
+                          style: TextStyle(color: Colors.grey)),
                 ],
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 32),
               _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      onPressed: _submitForm,
-                      child: Text("Simpan"),
+                  ? const Center(child: CircularProgressIndicator(color: GlowiesColors.roseGold))
+                  : SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _submitForm,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: GlowiesColors.roseGold,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          "Simpan Layanan",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ),
             ],
           ),
@@ -167,37 +286,22 @@ class _TambahLayananState extends State<TambahLayanan> {
     );
   }
 
-  pickEmployeePhoto() async {
+  
+  void pickEmployeePhoto() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    print(image);
-    print(image?.path);
-    setState(() {
-      employeePhoto = image;
-    });
-    if (image == null) {
-      return;
-    } else {
-      // final response = await CategoriesAPI.postCategory(
-      //   name: "ACAK",
-      //   image: File(image.path),
-      // );
+    if (image != null) {
+      setState(() {
+        employeePhoto = image;
+      });
     }
   }
 
-  pickServicePhoto() async {
+  void pickServicePhoto() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    print(image);
-    print(image?.path);
-    setState(() {
-      servicePhoto = image;
-    });
-    if (image == null) {
-      return;
-    } else {
-      // final response = await CategoriesAPI.postCategory(
-      //   name: "ACAK",
-      //   image: File(image.path),
-      // );
+    if (image != null) {
+      setState(() {
+        servicePhoto = image;
+      });
     }
   }
 }

@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_salon_projek/API/Endpoint/endpoint.dart';
-import 'package:app_salon_projek/Model/add_layanan_model.dart';
-import 'package:app_salon_projek/Model/get_layanan_model.dart';
 import 'package:app_salon_projek/Share_Preferences/share_preferences.dart';
-import 'package:app_salon_projek/model/delete_model.dart';
+import 'package:app_salon_projek/model/layanan/add_layanan_model.dart';
+import 'package:app_salon_projek/model/layanan/get_layanan_model.dart';
+import 'package:app_salon_projek/model/layanan/update_layanan_model.dart';
 import 'package:http/http.dart' as http;
 
 class AuthenticationAPIServices {

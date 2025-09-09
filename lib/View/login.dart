@@ -74,123 +74,112 @@ class _LoginAPIScreenState extends State<LoginAPIScreen> {
       setState(() {});
       isLoading = false;
     }
-    // final user = User(email: email, password: password, name: name);
-    // await DbHelper.registerUser(user);
-    // Future.delayed(const Duration(seconds: 1)).then((value) {
-    //   isLoading = false;
-    //   ScaffoldMessenger.of(
-    //     context,
-    //   ).showSnackBar(const SnackBar(content: Text("Pendaftaran berhasil")));
-    // });
   }
 
   SafeArea buildLayer() {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            // crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                "Welcome Back",
-                style: TextStyle(fontSize: 50, fontFamily: 'Allura'),
-              ),
-              height(12),
-              Text(
-                "Login API to access your account",
-                // style: TextStyle(fontSize: 14, color: AppColor.gray88),
-              ),
-              height(24),
-              buildTitle("Email Address"),
-              height(12),
-              buildTextField(
-                hintText: "Enter your email",
-                controller: emailController,
-              ),
-
-              height(16),
-              buildTitle("Password"),
-              height(12),
-              buildTextField(
-                hintText: "Enter your password",
-                isPassword: true,
-                controller: passwordController,
-              ),
-              height(12),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => MeetSebelas()),
-                    // );
-                  },
-                  child: Text(
-                    "Forgot Password?",
-                    style: TextStyle(
-                      fontSize: 12,
-                      // color: AppColor.orange,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 90),
+                Text(
+                  "Hai! Ayo Masuk",
+                  style: TextStyle(fontSize: 48, fontFamily: 'Allura'),
                 ),
-              ),
-              height(24),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: () {
-                    loginUser();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 245, 200, 245),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
-                  child: Text(
-                    "Login",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: const Color.fromARGB(255, 26, 25, 25),
-                    ),
-                  ),
+                
+                Text(
+                  "Masuk untuk menikmati perawatan diri",
+                  // style: TextStyle(fontSize: 14, color: AppColor.gray88),
                 ),
-              ),
-
-              height(16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Don't have an account?",
-                    // style: TextStyle(fontSize: 12, color: AppColor.gray88),
-                  ),
-                  TextButton(
+                height(24),
+                buildTitle("Email Address"),
+                height(12),
+                buildTextField(
+                  hintText: "Enter your email",
+                  controller: emailController,
+                ),
+          
+                height(16),
+                buildTitle("Password"),
+                height(12),
+                buildTextField(
+                  hintText: "Enter your password",
+                  isPassword: true,
+                  controller: passwordController,
+                ),
+                height(12),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
                     onPressed: () {
-                      context.push(PostApiScreen());
-                      // Navigator.pushReplacement(
+                      // Navigator.push(
                       //   context,
-                      //   MaterialPageRoute(builder: (context) => MeetEmpatA()),
+                      //   MaterialPageRoute(builder: (context) => MeetSebelas()),
                       // );
                     },
                     child: Text(
-                      "Sign Up",
+                      "Lupa Password?",
                       style: TextStyle(
-                        // color: AppColor.blueButton,
                         fontSize: 12,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
-                ],
-              ),
-            ],
+                ),
+                height(24),
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      loginUser();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 245, 209, 200),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    child: Text(
+                      "Masuk",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: const Color.fromARGB(255, 26, 25, 25),
+                      ),
+                    ),
+                  ),
+                ),
+          
+                height(16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Belum punya akun?",
+                     
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        context.push(PostApiScreen());
+                      },
+                      child: Text(
+                        "Daftar",
+                        style: TextStyle(
+                         
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -202,11 +191,11 @@ class _LoginAPIScreenState extends State<LoginAPIScreen> {
       height: double.infinity,
       width: double.infinity,
       decoration: const BoxDecoration(
-        // image: DecorationImage(
-        //   image: AssetImage("assets/images/wallpaper.jpg"),
-        //   fit: BoxFit.cover,
-        // ),
-        color: Colors.white,
+        image: DecorationImage(
+          image: AssetImage("assets/images/backgroundLogin.jpg"),
+          fit: BoxFit.cover,
+        ),
+       
       ),
     );
   }
