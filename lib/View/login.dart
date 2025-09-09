@@ -2,7 +2,7 @@ import 'package:app_salon_projek/API/auth.dart';
 import 'package:app_salon_projek/Extension/navigator.dart';
 import 'package:app_salon_projek/Model/login_model.dart';
 import 'package:app_salon_projek/Share_Preferences/share_preferences.dart';
-import 'package:app_salon_projek/view/layanan/halaman_layanan.dart';
+import 'package:app_salon_projek/view/layanan/salon_home_page.dart';
 import 'package:app_salon_projek/view/register.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +59,7 @@ class _LoginAPIScreenState extends State<LoginAPIScreen> {
       Future.delayed(Duration(milliseconds: 1500), () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HalamanDashboard()),
+          MaterialPageRoute(builder: (context) => SalonHomePage()),
         );
       });
     } catch (e) {

@@ -1,7 +1,10 @@
-import 'package:app_salon_projek/view/splash_screen.dart';
+import 'package:app_salon_projek/view/layanan/salon_home_page.dart';
+import 'package:app_salon_projek/view/login.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
+  initializeDateFormatting("id_ID");
   runApp(const MyApp());
 }
 
@@ -14,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: "Ms. Beauty",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true),
-      home: SplashScreen(),
+      home: LoginAPIScreen()
     );
   }
 }

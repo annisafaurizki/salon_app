@@ -1,6 +1,6 @@
 import 'package:app_salon_projek/Share_Preferences/share_preferences.dart';
 import 'package:app_salon_projek/extension/navigator.dart';
-import 'package:app_salon_projek/view/layanan/halaman_layanan.dart';
+import 'package:app_salon_projek/view/layanan/list_layanan.dart';
 import 'package:app_salon_projek/view/login.dart';
 import 'package:flutter/material.dart';
 

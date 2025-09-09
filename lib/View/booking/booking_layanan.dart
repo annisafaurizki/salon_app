@@ -1,203 +1,183 @@
-import 'dart:io';
-
-import 'package:app_salon_projek/API/layanan_service.dart';
-import 'package:app_salon_projek/Extension/navigator.dart';
-import 'package:app_salon_projek/view/layanan/halaman_layanan.dart';
+import 'package:app_salon_projek/api/booking_service.dart';
+import 'package:app_salon_projek/extension/navigator.dart';
+import 'package:app_salon_projek/view/layanan/list_layanan.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:app_salon_projek/Model/get_layanan_model.dart';
 
-class TambahLayanan extends StatefulWidget {
-  const TambahLayanan({super.key});
+class BookingPage extends StatefulWidget {
+  final DataLayanan layanan;
+  const BookingPage({super.key, required this.layanan});
 
   @override
-  State<TambahLayanan> createState() => _TambahLayananState();
+  State<BookingPage> createState() => _BookingPageState();
 }
 
-class _TambahLayananState extends State<TambahLayanan> {
-  final _formKey = GlobalKey<FormState>();
+class _BookingPageState extends State<BookingPage> {
+  DateTime? selectedDate;
+  TimeOfDay? selectedTime;
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController priceController = TextEditingController();
-  final TextEditingController employeeNameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  bool isLoading = false;
 
-  final ImagePicker _picker = ImagePicker();
-  XFile? employeePhoto;
-  XFile? servicePhoto;
-  bool _isLoading = false;
+  @override
+  void dispose() {
+    nameController.dispose();
+    phoneController.dispose();
+    super.dispose();
+  }
 
-  Future<void> _submitForm() async {
-    if (employeePhoto == null || servicePhoto == null) {
+  Future<void> submitBooking() async {
+    if (selectedDate == null || selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Foto karyawan atau layanan harus diisi")),
+        const SnackBar(content: Text("Pilih tanggal & waktu dulu")),
       );
       return;
     }
-    if (!_formKey.currentState!.validate()) return;
+    if (nameController.text.trim().isEmpty ||
+        phoneController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Isi nama dan nomor HP dulu")),
+      );
+      return;
+    }
 
-    setState(() {
-      _isLoading = true;
-    });
+    final bookingDateTime = DateTime(
+      selectedDate!.year,
+      selectedDate!.month,
+      selectedDate!.day,
+      selectedTime!.hour,
+      selectedTime!.minute,
+    );
+
+    // 👉 format "2025-06-20T14:00:00"
+    final bookingTimeStr = bookingDateTime.toIso8601String().split('.').first;
+
+    setState(() => isLoading = true);
 
     try {
-      final result = await AuthenticationAPIServices.addServices(
-        name: nameController.text,
-        description: descriptionController.text,
-        price: priceController.text,
-        employeeName: employeeNameController.text,
-        employeePhoto: File(employeePhoto?.path ?? ""),
-        servicePhoto: File(servicePhoto?.path ?? ""),
+      final result = await BookingService.addServices(
+        serviceId: widget.layanan.id.toString(),
+        bookingTime: bookingTimeStr,
       );
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(result.message)));
-      context.pop(HalamanDashboard());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message ?? "Booking berhasil!")),
+      );
+      if (mounted) context.pop(HalamanDashboard());
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Gagal menambahkan Layanan: $e")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Gagal booking: $e")),
+      );
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) setState(() => isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    String two(int n) => n.toString().padLeft(2, '0');
+
+    final selectedTimeText = selectedTime == null
+        ? "Pilih Waktu"
+        : "${two(selectedTime!.hour)}:${two(selectedTime!.minute)}";
+
+    final selectedDateText = selectedDate == null
+        ? "Pilih Tanggal"
+        : "${two(selectedDate!.day)}/${two(selectedDate!.month)}/${selectedDate!.year}";
+
     return Scaffold(
-      appBar: AppBar(title: Text("Tambah Layanan")),
-      body: Padding(
-        padding: EdgeInsets.all(12),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: nameController,
-                decoration: InputDecoration(labelText: "Nama Layanan"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Nama tidak boleh kosong";
-                  }
-                  return null;
-                },
+      appBar: AppBar(title: const Text("Booking Layanan")),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Nama Service otomatis
+            Text(
+              "Layanan: ${widget.layanan.name}",
+              style: const TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+
+            // Input Nama Customer
+            TextField(
+              controller: nameController,
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(
+                labelText: "Nama Customer",
+                border: OutlineInputBorder(),
               ),
-              TextFormField(
-                controller: descriptionController,
-                decoration: InputDecoration(labelText: "Deskripsi Layanan"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Deskripsi tidak boleh kosong";
-                  }
-                  return null;
-                },
+            ),
+            const SizedBox(height: 16),
+
+            // Input Nomor HP
+            TextField(
+              controller: phoneController,
+              keyboardType: TextInputType.phone,
+              textInputAction: TextInputAction.done,
+              decoration: const InputDecoration(
+                labelText: "Nomor HP",
+                border: OutlineInputBorder(),
               ),
-              TextFormField(
-                controller: priceController,
-                decoration: InputDecoration(labelText: "Harga"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Harga tidak boleh kosong";
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: employeeNameController,
-                decoration: InputDecoration(labelText: "Nama Karyawan"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Nama tidak boleh kosong";
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 12),
-              Text("Foto Karyawan"),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: pickEmployeePhoto,
-                    child: Text("Ambil Foto Karyawan"),
+            ),
+            const SizedBox(height: 16),
+
+            // Pilih tanggal
+            ListTile(
+              title: Text(selectedDateText),
+              trailing: const Icon(Icons.calendar_today),
+              onTap: () async {
+                final date = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(2100),
+                );
+                if (date != null) setState(() => selectedDate = date);
+              },
+            ),
+
+            // Pilih waktu
+            ListTile(
+              title: Text(selectedTimeText),
+              trailing: const Icon(Icons.access_time),
+              onTap: () async {
+                final time = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay.now(),
+                );
+                if (time != null) {
+                  setState(() => selectedTime = time);
+                }
+              },
+            ),
+
+            const SizedBox(height: 30),
+
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.pink,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 40, vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  SizedBox(width: 12),
-                  employeePhoto != null
-                      ? Image.file(
-                          File(employeePhoto!.path),
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        )
-                      : Text("Belum ada foto"),
-                ],
+                ),
+                onPressed: isLoading ? null : submitBooking,
+                child: isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        "Konfirmasi Booking",
+                        style: TextStyle(
+                            color: Colors.white, fontSize: 16),
+                      ),
               ),
-              SizedBox(height: 12),
-              Text("Foto Layanan"),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: pickServicePhoto,
-                    child: Text("Ambil Foto Layanan"),
-                  ),
-                  SizedBox(width: 12),
-                  servicePhoto != null
-                      ? Image.file(
-                          File(servicePhoto!.path),
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        )
-                      : Text("Belum ada foto"),
-                ],
-              ),
-              SizedBox(height: 24),
-              _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      onPressed: _submitForm,
-                      child: Text("Simpan"),
-                    ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  pickEmployeePhoto() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    print(image);
-    print(image?.path);
-    setState(() {
-      employeePhoto = image;
-    });
-    if (image == null) {
-      return;
-    } else {
-      // final response = await CategoriesAPI.postCategory(
-      //   name: "ACAK",
-      //   image: File(image.path),
-      // );
-    }
-  }
-
-  pickServicePhoto() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    print(image);
-    print(image?.path);
-    setState(() {
-      servicePhoto = image;
-    });
-    if (image == null) {
-      return;
-    } else {
-      // final response = await CategoriesAPI.postCategory(
-      //   name: "ACAK",
-      //   image: File(image.path),
-      // );
-    }
   }
 }

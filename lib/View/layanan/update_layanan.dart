@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:app_salon_projek/API/layanan_service.dart';
 import 'package:app_salon_projek/Extension/navigator.dart';
 import 'package:app_salon_projek/model/get_layanan_model.dart';
-import 'package:app_salon_projek/view/layanan/halaman_layanan.dart';
+import 'package:app_salon_projek/view/layanan/list_layanan.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -31,10 +31,10 @@ class _UpdateLayananState extends State<UpdateLayanan> {
   @override
   void initState() {
     super.initState();
-    nameController.text = widget.layanan.name;
-    descriptionController.text = widget.layanan.description;
+    nameController.text = widget.layanan.name ?? "";
+    descriptionController.text = widget.layanan.description ?? "";
     priceController.text = widget.layanan.price.toString();
-    employeeNameController.text = widget.layanan.employeeName;
+    employeeNameController.text = widget.layanan.employeeName ?? "";
   }
 
   Future<void> _submitForm() async {
@@ -52,7 +52,7 @@ class _UpdateLayananState extends State<UpdateLayanan> {
 
     try {
       final result = await AuthenticationAPIServices.updateServices(
-        id: widget.layanan.id,
+        id: widget.layanan.id ?? 0,
         name: nameController.text,
         description: descriptionController.text,
         price: priceController.text,
@@ -62,7 +62,7 @@ class _UpdateLayananState extends State<UpdateLayanan> {
             : File(widget.layanan.employeePhoto ?? ""),
         servicePhoto: servicePhoto != null
             ? File(servicePhoto!.path)
-            : File(widget.layanan.servicePhoto),
+            : File(widget.layanan.servicePhoto ?? ""),
       );
 
       ScaffoldMessenger.of(
@@ -173,7 +173,7 @@ class _UpdateLayananState extends State<UpdateLayanan> {
                           fit: BoxFit.cover,
                         )
                       : Image.file(
-                          File(widget.layanan.servicePhoto),
+                          File(widget.layanan.servicePhoto ?? ""),
                           width: 100,
                           height: 100,
                           fit: BoxFit.cover,
