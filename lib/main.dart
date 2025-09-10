@@ -1,8 +1,7 @@
 import 'package:app_salon_projek/view/home_api.dart';
 import 'package:app_salon_projek/view/login.dart';
-import 'package:flutter/material.dart';
 import 'package:app_salon_projek/view/splash_screen.dart';
-
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());

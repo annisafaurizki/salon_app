@@ -5,7 +5,6 @@ import 'package:app_salon_projek/API/Endpoint/endpoint.dart';
 import 'package:app_salon_projek/Share_Preferences/share_preferences.dart';
 import 'package:app_salon_projek/model/layanan/add_layanan_model.dart';
 import 'package:app_salon_projek/model/layanan/get_layanan_model.dart';
-import 'package:app_salon_projek/model/layanan/update_layanan_model.dart';
 import 'package:http/http.dart' as http;
 
 class AuthenticationAPIServices {
@@ -55,8 +54,8 @@ class AuthenticationAPIServices {
   }
 
   static Future<AddLayananModel> updateServices({
-    required int id,
     required String name,
+    required int id,
     required String description,
     required String price,
     required String employeeName,
@@ -117,20 +116,31 @@ class AuthenticationAPIServices {
     }
   }
 
-  static Future<DeleteModel> deleteService(int id) async {
+  static Future<bool> deleteService(int id) async {
     final url = Uri.parse("${Endpoint.services}/$id");
     final token = await PreferenceHandler.getToken();
 
     final response = await http.delete(
       url,
-      headers: {"Accept": "application/json", "Authorization": "Bearer $token"},
+      headers: {
+        "Accept": "application/json",
+        if (token != null) "Authorization": "Bearer $token",
+      },
     );
 
-    if (response.statusCode == 200) {
-      return DeleteModel.fromJson(json.decode(response.body));
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      // delete berhasil
+      return true;
     } else {
-      final error = json.decode(response.body);
-      throw Exception(error["message"] ?? "Gagal mengambil data layanan");
+      // kalau ada error, coba ambil pesan
+      try {
+        final error = json.decode(response.body);
+        throw Exception(error["message"] ?? "Gagal menghapus layanan");
+      } catch (e) {
+        throw Exception(
+          "Gagal menghapus layanan (status ${response.statusCode})",
+        );
+      }
     }
   }
 }

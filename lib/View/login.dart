@@ -90,7 +90,7 @@ class _LoginAPIScreenState extends State<LoginAPIScreen> {
                   "Hai! Ayo Masuk",
                   style: TextStyle(fontSize: 48, fontFamily: 'Allura'),
                 ),
-                
+
                 Text(
                   "Masuk untuk menikmati perawatan diri",
                   // style: TextStyle(fontSize: 14, color: AppColor.gray88),
@@ -102,7 +102,7 @@ class _LoginAPIScreenState extends State<LoginAPIScreen> {
                   hintText: "Enter your email",
                   controller: emailController,
                 ),
-          
+
                 height(16),
                 buildTitle("Password"),
                 height(12),
@@ -126,6 +126,7 @@ class _LoginAPIScreenState extends State<LoginAPIScreen> {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
+                        color: Colors.black,
                       ),
                     ),
                   ),
@@ -154,15 +155,12 @@ class _LoginAPIScreenState extends State<LoginAPIScreen> {
                     ),
                   ),
                 ),
-          
+
                 height(16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "Belum punya akun?",
-                     
-                    ),
+                    Text("Belum punya akun?"),
                     TextButton(
                       onPressed: () {
                         context.push(PostApiScreen());
@@ -170,9 +168,9 @@ class _LoginAPIScreenState extends State<LoginAPIScreen> {
                       child: Text(
                         "Daftar",
                         style: TextStyle(
-                         
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
                     ),
@@ -195,7 +193,6 @@ class _LoginAPIScreenState extends State<LoginAPIScreen> {
           image: AssetImage("assets/images/backgroundLogin.jpg"),
           fit: BoxFit.cover,
         ),
-       
       ),
     );
   }

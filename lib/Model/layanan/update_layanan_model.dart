@@ -4,18 +4,18 @@
 
 import 'dart:convert';
 
-DeleteModel deleteModelFromJson(String str) =>
-    DeleteModel.fromJson(json.decode(str));
+UpdateList deleteModelFromJson(String str) =>
+    UpdateList.fromJson(json.decode(str));
 
-String deleteModelToJson(DeleteModel data) => json.encode(data.toJson());
+String deleteModelToJson(UpdateList data) => json.encode(data.toJson());
 
-class DeleteModel {
+class UpdateList {
   String? message;
   Data? data;
 
-  DeleteModel({this.message, this.data});
+  UpdateList({this.message, this.data});
 
-  factory DeleteModel.fromJson(Map<String, dynamic> json) => DeleteModel(
+  factory UpdateList.fromJson(Map<String, dynamic> json) => UpdateList(
     message: json["message"],
     data: json["data"] == null ? null : Data.fromJson(json["data"]),
   );

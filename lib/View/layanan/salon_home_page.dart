@@ -1,7 +1,6 @@
 import 'package:app_salon_projek/api/booking_service.dart';
 import 'package:app_salon_projek/extension/navigator.dart';
 import 'package:app_salon_projek/model/booking/get_booking.dart';
-import 'package:app_salon_projek/view/booking/update_booking.dart';
 import 'package:app_salon_projek/view/home_api.dart';
 import 'package:app_salon_projek/view/layanan/list_layanan.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +15,6 @@ class GlowiesColors {
   static const Color confirmedGreen = Color(0xFF6B9F8D);
   static const Color cancelledRed = Color(0xFFE07A7A);
   static const Color pendingOrange = Color(0xFFE0C47A);
-  static const Color completedBlue = Color(0xFF7A9FE0);
 }
 
 final List<Map<String, dynamic>> categories = [
@@ -28,6 +26,7 @@ final List<Map<String, dynamic>> categories = [
 
 class SalonHomePage extends StatefulWidget {
   const SalonHomePage({super.key});
+  static const id = '/salonhomepage';
 
   @override
   State<SalonHomePage> createState() => _SalonHomePageState();
@@ -47,29 +46,85 @@ class _SalonHomePageState extends State<SalonHomePage> {
   void _loadBookings() {
     setState(() {
       _futureBookings = BookingApiService.getBookingHistory().then((bookings) {
-        _allBookings = bookings; // Simpan semua data booking
+        _allBookings = bookings;
         return bookings;
       });
     });
   }
 
-  // Fungsi untuk memfilter booking berdasarkan query pencarian
-  List<BookingData> _filterBookings(List<BookingData> bookings, String query) {
-    if (query.isEmpty) {
-      return bookings;
+  // deletebooking
+  Future<void> _deleteBooking(int bookingId) async {
+    try {
+      bool success = await BookingApiService.deleteBooking(bookingId);
+      if (success) {
+        // Langsung reload data dari API
+        _loadBookings();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("✅ Booking berhasil dihapus")),
+        );
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("❌ Gagal hapus booking")));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("❌ Error: $e")));
     }
-    
+  }
+
+  Future<void> _updateStatus(int bookingId, String newStatus) async {
+    debugPrint("🎯 Mulai update status: $bookingId -> $newStatus");
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text("⏳ Sedang mengupdate status..."),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+
+    bool success = await BookingApiService.updateBookingStatus(
+      id: bookingId,
+      status: newStatus,
+    );
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    if (success) {
+      debugPrint("✅ Berhasil update status");
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("✅ Status berhasil diubah ke $newStatus"),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+
+      _loadBookings();
+    } else {
+      debugPrint("❌ Gagal update status");
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("❌ Gagal mengupdate status"),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  List<BookingData> _filterBookings(List<BookingData> bookings, String query) {
+    if (query.isEmpty) return bookings;
+
     return bookings.where((booking) {
-      // Cari di berbagai field booking
       final serviceName = booking.service.name.toLowerCase();
-      final bookingDate = DateFormat('dd MMM yyyy - HH:mm')
-          .format(booking.bookingTime)
-          .toLowerCase();
+      final bookingDate = DateFormat(
+        'dd MMM yyyy - HH:mm',
+      ).format(booking.bookingTime).toLowerCase();
       final status = booking.status.toLowerCase();
       final price = _formatBookingPrice(booking.service.price).toLowerCase();
-      
+
       final queryLower = query.toLowerCase();
-      
+
       return serviceName.contains(queryLower) ||
           bookingDate.contains(queryLower) ||
           status.contains(queryLower) ||
@@ -77,15 +132,10 @@ class _SalonHomePageState extends State<SalonHomePage> {
     }).toList();
   }
 
-  // Fungsi untuk memformat harga dengan aman
   String _formatBookingPrice(dynamic price) {
     try {
       if (price == null) return 'Rp 0';
-      print('Price data: $price, Type: ${price.runtimeType}');
-
-      if (price is String && price.contains('Rp')) {
-        return price;
-      }
+      if (price is String && price.contains('Rp')) return price;
 
       final numericValue = double.tryParse(price.toString());
       if (numericValue != null) {
@@ -96,10 +146,9 @@ class _SalonHomePageState extends State<SalonHomePage> {
         );
         return format.format(numericValue);
       }
-
       return 'Rp 0';
     } catch (e) {
-      print('Error formatting price: $e');
+      debugPrint('Error formatting price: $e');
       return 'Rp 0';
     }
   }
@@ -114,6 +163,7 @@ class _SalonHomePageState extends State<SalonHomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // 🔹 Header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -126,7 +176,11 @@ class _SalonHomePageState extends State<SalonHomePage> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.person, color: GlowiesColors.roseGold),
+                    icon: const Icon(
+                      Icons.person,
+                      size: 40,
+                      color: GlowiesColors.roseGold,
+                    ),
                     onPressed: () {
                       context.push(const HalamanUtamaDua());
                     },
@@ -140,13 +194,9 @@ class _SalonHomePageState extends State<SalonHomePage> {
 
               const SizedBox(height: 20),
 
-              // TextField Pencarian
+              // 🔍 Search bar
               TextField(
-                onChanged: (val) {
-                  setState(() {
-                    searchQuery = val;
-                  });
-                },
+                onChanged: (val) => setState(() => searchQuery = val),
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
                   hintText: "Cari layanan, tanggal, atau status...",
@@ -163,6 +213,7 @@ class _SalonHomePageState extends State<SalonHomePage> {
 
               const SizedBox(height: 20),
 
+              // 📸 Banner
               Container(
                 height: 150,
                 padding: const EdgeInsets.all(16),
@@ -178,18 +229,22 @@ class _SalonHomePageState extends State<SalonHomePage> {
 
               const SizedBox(height: 24),
 
+              // 📌 Kategori
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
                   Text(
                     "Kategori",
                     style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: GlowiesColors.darkText),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: GlowiesColors.darkText,
+                    ),
                   ),
-                  Text("Lihat Semua",
-                      style: TextStyle(color: GlowiesColors.roseGold)),
+                  Text(
+                    "Lihat Semua",
+                    style: TextStyle(color: GlowiesColors.roseGold),
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -204,8 +259,8 @@ class _SalonHomePageState extends State<SalonHomePage> {
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                              content:
-                                  Text("${cat["name"]} belum tersedia")),
+                            content: Text("${cat["name"]} belum tersedia"),
+                          ),
                         );
                       }
                     },
@@ -214,8 +269,10 @@ class _SalonHomePageState extends State<SalonHomePage> {
                         CircleAvatar(
                           radius: 28,
                           backgroundColor: GlowiesColors.lightGray,
-                          child:
-                              Icon(cat["icon"], color: GlowiesColors.roseGold),
+                          child: Icon(
+                            cat["icon"],
+                            color: GlowiesColors.roseGold,
+                          ),
                         ),
                         const SizedBox(height: 6),
                         Text(
@@ -233,15 +290,17 @@ class _SalonHomePageState extends State<SalonHomePage> {
 
               const SizedBox(height: 24),
 
+              // 📅 Janji Temu
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
                     "Janji Temu ",
                     style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: GlowiesColors.darkText),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: GlowiesColors.darkText,
+                    ),
                   ),
                   IconButton(
                     icon: const Icon(Icons.refresh, size: 20),
@@ -253,11 +312,16 @@ class _SalonHomePageState extends State<SalonHomePage> {
 
               const SizedBox(height: 8),
 
+              // 🔄 FutureBuilder Booking
               FutureBuilder<List<BookingData>>(
                 future: _futureBookings,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator(color: GlowiesColors.roseGold));
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: GlowiesColors.roseGold,
+                      ),
+                    );
                   }
 
                   if (snapshot.hasError) {
@@ -266,13 +330,18 @@ class _SalonHomePageState extends State<SalonHomePage> {
                         children: [
                           Text(
                             "Gagal memuat data: ${snapshot.error}",
-                            style: const TextStyle(color: GlowiesColors.cancelledRed),
+                            style: const TextStyle(
+                              color: GlowiesColors.cancelledRed,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 10),
                           TextButton(
                             onPressed: _loadBookings,
-                            child: const Text("Coba Lagi", style: TextStyle(color: GlowiesColors.roseGold)),
+                            child: const Text(
+                              "Coba Lagi",
+                              style: TextStyle(color: GlowiesColors.roseGold),
+                            ),
                           ),
                         ],
                       ),
@@ -301,10 +370,11 @@ class _SalonHomePageState extends State<SalonHomePage> {
                   }
 
                   final allBookings = snapshot.data!;
-                  // Filter booking berdasarkan query pencarian
-                  final filteredBookings = _filterBookings(allBookings, searchQuery);
+                  final filteredBookings = _filterBookings(
+                    allBookings,
+                    searchQuery,
+                  );
 
-                  // Tampilkan pesan jika tidak ada hasil pencarian
                   if (searchQuery.isNotEmpty && filteredBookings.isEmpty) {
                     return Container(
                       padding: const EdgeInsets.all(16),
@@ -314,7 +384,11 @@ class _SalonHomePageState extends State<SalonHomePage> {
                       ),
                       child: Column(
                         children: [
-                          const Icon(Icons.search_off, size: 40, color: Colors.grey),
+                          const Icon(
+                            Icons.search_off,
+                            size: 40,
+                            color: Colors.grey,
+                          ),
                           const SizedBox(height: 8),
                           Text(
                             "Tidak ditemukan hasil untuk '$searchQuery'",
@@ -326,72 +400,132 @@ class _SalonHomePageState extends State<SalonHomePage> {
                     );
                   }
 
-                  // Tampilkan semua booking jika tidak ada pencarian, atau hasil yang difilter
-                  final bookingsToShow = searchQuery.isEmpty 
-                      ? allBookings.take(3).toList() 
+                  final bookingsToShow = searchQuery.isEmpty
+                      ? allBookings.take(3).toList()
                       : filteredBookings;
 
                   return Column(
                     children: bookingsToShow.map((booking) {
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 6),
-                        elevation: 2,
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)
+                      return Dismissible(
+                        key: Key(booking.id.toString()),
+                        direction: DismissDirection.endToStart,
+                        background: Container(
+                          color: Colors.redAccent,
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: const Icon(Icons.delete, color: Colors.white),
                         ),
-                        child: ListTile(
-                          leading: const Icon(Icons.calendar_today,
-                              color: GlowiesColors.roseGold),
-                          title: Text(
-                            booking.service.name,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: GlowiesColors.darkText),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _formatBookingPrice(booking.service.price),
-                                style: const TextStyle(
-                                  color: GlowiesColors.roseGold,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                        confirmDismiss: (direction) async {
+                          return await showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text("Hapus Booking"),
+                              content: Text(
+                                "Apakah Anda yakin ingin menghapus booking '${booking.service.name}'?",
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                DateFormat('dd MMM yyyy - HH:mm')
-                                    .format(booking.bookingTime),
-                                style: const TextStyle(fontSize: 12, color: GlowiesColors.darkText),
-                              ),
-                              const SizedBox(height: 4),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: _getStatusColor(booking.status),
-                                  borderRadius: BorderRadius.circular(12),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(ctx).pop(false),
+                                  child: const Text("Batal"),
                                 ),
-                                child: Text(
-                                  booking.status.toUpperCase(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
+                                TextButton(
+                                  onPressed: () => Navigator.of(ctx).pop(true),
+                                  child: const Text(
+                                    "Hapus",
+                                    style: TextStyle(color: Colors.red),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
+                          );
+                        },
+                        onDismissed: (direction) {
+                          _deleteBooking(booking.id);
+                        },
+                        child: Card(
+                          margin: const EdgeInsets.symmetric(vertical: 6),
+                          elevation: 2,
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          trailing: const Icon(Icons.chevron_right,
-                              color: Colors.grey),
-                          onTap: () {
-                            context.push(EditBookingPage(booking: booking))
-                                .then((_) {
-                              _loadBookings();
-                            });
-                          },
+                          child: ListTile(
+                            leading: const Icon(
+                              Icons.calendar_today,
+                              color: GlowiesColors.roseGold,
+                            ),
+                            title: Text(
+                              booking.service.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: GlowiesColors.darkText,
+                              ),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _formatBookingPrice(booking.service.price),
+                                  style: const TextStyle(
+                                    color: GlowiesColors.roseGold,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  DateFormat(
+                                    'dd MMM yyyy - HH:mm',
+                                  ).format(booking.bookingTime),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: GlowiesColors.darkText,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: _getStatusColor(booking.status),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    booking.status.toUpperCase(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            trailing: PopupMenuButton<String>(
+                              icon: const Icon(
+                                Icons.more_vert,
+                                color: Colors.grey,
+                              ),
+                              onSelected: (value) {
+                                _updateStatus(booking.id, value);
+                              },
+                              itemBuilder: (context) => [
+                                const PopupMenuItem(
+                                  value: "confirmed",
+                                  child: Text("Confirm"),
+                                ),
+                                const PopupMenuItem(
+                                  value: "pending",
+                                  child: Text("Pending"),
+                                ),
+                                const PopupMenuItem(
+                                  value: "cancelled",
+                                  child: Text("Cancel"),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     }).toList(),
@@ -415,8 +549,6 @@ class _SalonHomePageState extends State<SalonHomePage> {
         return GlowiesColors.pendingOrange;
       case 'cancelled':
         return GlowiesColors.cancelledRed;
-      case 'completed':
-        return GlowiesColors.completedBlue;
       default:
         return Colors.grey;
     }

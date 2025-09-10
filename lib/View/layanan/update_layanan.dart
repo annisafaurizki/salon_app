@@ -1,16 +1,15 @@
 import 'dart:io';
 
 import 'package:app_salon_projek/API/layanan_service.dart';
-import 'package:app_salon_projek/Extension/navigator.dart';
 import 'package:app_salon_projek/model/layanan/get_layanan_model.dart';
-import 'package:app_salon_projek/view/layanan/list_layanan.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UpdateLayanan extends StatefulWidget {
   final DataLayanan layanan;
+  final VoidCallback? onServiceSaved;
 
-  const UpdateLayanan({super.key, required this.layanan});
+  const UpdateLayanan({super.key, required this.layanan, this.onServiceSaved});
 
   @override
   State<UpdateLayanan> createState() => _UpdateLayananState();
@@ -18,6 +17,7 @@ class UpdateLayanan extends StatefulWidget {
 
 class _UpdateLayananState extends State<UpdateLayanan> {
   final _formKey = GlobalKey<FormState>();
+
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
@@ -27,6 +27,13 @@ class _UpdateLayananState extends State<UpdateLayanan> {
   XFile? employeePhoto;
   XFile? servicePhoto;
   bool _isLoading = false;
+
+  // Color palette
+  static const Color roseGold = Color(0xFF443627);
+  static const Color offWhite = Color(0xFFF0F0F0);
+  static const Color darkText = Color(0xFF333333);
+  static const Color lightGray = Color(0xFFE0E0E0);
+  static const Color warmGold = Color(0xFFE5B39B);
 
   @override
   void initState() {
@@ -38,12 +45,6 @@ class _UpdateLayananState extends State<UpdateLayanan> {
   }
 
   Future<void> _submitForm() async {
-    if (employeePhoto == null || servicePhoto == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Foto karyawan atau layanan harus diisi")),
-      );
-      return;
-    }
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -65,14 +66,20 @@ class _UpdateLayananState extends State<UpdateLayanan> {
             : File(widget.layanan.servicePhoto ?? ""),
       );
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(result.message)));
-      context.pop(HalamanDashboard());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message), backgroundColor: roseGold),
+      );
+
+      if (widget.onServiceSaved != null) widget.onServiceSaved!();
+
+      Navigator.of(context).pop();
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Gagal mengupdate Layanan: $e")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Gagal mengupdate layanan: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
     } finally {
       setState(() {
         _isLoading = false;
@@ -83,148 +90,277 @@ class _UpdateLayananState extends State<UpdateLayanan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Update Layanan")),
-      body: Padding(
-        padding: EdgeInsets.all(12),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: nameController,
-                decoration: InputDecoration(labelText: "Nama Layanan"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Nama tidak boleh kosong";
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: descriptionController,
-                decoration: InputDecoration(labelText: "Deskripsi Layanan"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Deskripsi tidak boleh kosong";
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: priceController,
-                decoration: InputDecoration(labelText: "Harga"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Harga tidak boleh kosong";
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: employeeNameController,
-                decoration: InputDecoration(labelText: "Nama Karyawan"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Nama tidak boleh kosong";
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 12),
-              Text("Foto Karyawan"),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: pickEmployeePhoto,
-                    child: Text("Ambil Foto Karyawan"),
+      appBar: AppBar(
+        title: const Text(
+          "Update Layanan",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: roseGold,
+        iconTheme: const IconThemeData(color: Colors.white),
+        elevation: 0,
+      ),
+      body: Container(
+        color: offWhite,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  SizedBox(width: 12),
-                  employeePhoto != null
-                      ? Image.file(
-                          File(employeePhoto!.path),
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        )
-                      : Image.file(
-                          File(widget.layanan.employeePhoto ?? ""),
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        _buildTextField(
+                          controller: nameController,
+                          label: "Nama Layanan",
+                          icon: Icons.spa,
                         ),
-                ],
-              ),
-              SizedBox(height: 12),
-              Text("Foto Layanan"),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: pickServicePhoto,
-                    child: Text("Ambil Foto Layanan"),
-                  ),
-                  SizedBox(width: 12),
-                  servicePhoto != null
-                      ? Image.file(
-                          File(servicePhoto!.path),
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        )
-                      : Image.file(
-                          File(widget.layanan.servicePhoto ?? ""),
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
+                        const SizedBox(height: 16),
+                        _buildTextField(
+                          controller: descriptionController,
+                          label: "Deskripsi Layanan",
+                          icon: Icons.description,
+                          maxLines: 3,
                         ),
-                ],
-              ),
-              SizedBox(height: 24),
-              _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      onPressed: _submitForm,
-                      child: Text("Simpan"),
+                        const SizedBox(height: 16),
+                        _buildTextField(
+                          controller: priceController,
+                          label: "Harga",
+                          icon: Icons.money,
+                          keyboardType: TextInputType.number,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildTextField(
+                          controller: employeeNameController,
+                          label: "Nama Karyawan",
+                          icon: Icons.person,
+                        ),
+                      ],
                     ),
-            ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Foto Karyawan",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: darkText,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            _buildImageButton(
+                              onPressed: pickEmployeePhoto,
+                              text: "Ambil Foto Karyawan",
+                              icon: Icons.camera_alt,
+                            ),
+                            const SizedBox(width: 12),
+                            _buildImagePreview(
+                              employeePhoto,
+                              widget.layanan.employeePhoto,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Foto Layanan",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: darkText,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            _buildImageButton(
+                              onPressed: pickServicePhoto,
+                              text: "Ambil Foto Layanan",
+                              icon: Icons.photo_camera,
+                            ),
+                            const SizedBox(width: 12),
+                            _buildImagePreview(
+                              servicePhoto,
+                              widget.layanan.servicePhoto,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                _isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation(roseGold),
+                        ),
+                      )
+                    : ElevatedButton(
+                        onPressed: _submitForm,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: roseGold,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 3,
+                        ),
+                        child: const Text(
+                          "Simpan Perubahan",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  pickEmployeePhoto() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    print(image);
-    print(image?.path);
-    setState(() {
-      employeePhoto = image;
-    });
-    if (image == null) {
-      return;
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: darkText),
+        prefixIcon: Icon(icon, color: roseGold),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: lightGray),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: roseGold),
+        ),
+        filled: true,
+        fillColor: Colors.white,
+      ),
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      validator: (value) =>
+          value == null || value.isEmpty ? "$label tidak boleh kosong" : null,
+      style: const TextStyle(color: darkText),
+    );
+  }
+
+  Widget _buildImageButton({
+    required VoidCallback onPressed,
+    required String text,
+    required IconData icon,
+  }) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: roseGold,
+        side: const BorderSide(color: roseGold),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 18),
+          const SizedBox(width: 8),
+          Text(text, style: const TextStyle(fontSize: 14)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImagePreview(XFile? newImage, String? existingImagePath) {
+    if (newImage != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Image.file(
+          File(newImage.path),
+          width: 100,
+          height: 100,
+          fit: BoxFit.cover,
+        ),
+      );
+    } else if (existingImagePath != null && existingImagePath.isNotEmpty) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Image.file(
+          File(existingImagePath),
+          width: 100,
+          height: 100,
+          fit: BoxFit.cover,
+        ),
+      );
     } else {
-      // final response = await CategoriesAPI.postCategory(
-      //   name: "ACAK",
-      //   image: File(image.path),
-      // );
+      return Container(
+        width: 100,
+        height: 100,
+        decoration: BoxDecoration(
+          color: lightGray,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: warmGold),
+        ),
+        child: Icon(Icons.image, color: warmGold, size: 40),
+      );
+    }
+  }
+
+  pickEmployeePhoto() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        employeePhoto = image;
+      });
     }
   }
 
   pickServicePhoto() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    print(image);
-    print(image?.path);
-    setState(() {
-      servicePhoto = image;
-    });
-    if (image == null) {
-      return;
-    } else {
-      // final response = await CategoriesAPI.postCategory(
-      //   name: "ACAK",
-      //   image: File(image.path),
-      // );
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        servicePhoto = image;
+      });
     }
   }
 }

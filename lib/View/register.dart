@@ -69,7 +69,6 @@ class _PostApiScreenState extends State<PostApiScreen> {
       setState(() {});
       isLoading = false;
     }
-
   }
 
   SafeArea buildLayer() {
@@ -81,7 +80,7 @@ class _PostApiScreenState extends State<PostApiScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 60,),
+                SizedBox(height: 60),
                 Text(
                   "Selamat Datang",
                   style: TextStyle(fontSize: 50, fontFamily: 'Allura'),
@@ -120,7 +119,7 @@ class _PostApiScreenState extends State<PostApiScreen> {
                       registerUser();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 245, 200, 245),
+                      backgroundColor: const Color.fromARGB(255, 245, 209, 200),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -150,13 +149,16 @@ class _PostApiScreenState extends State<PostApiScreen> {
                     ),
                   ],
                 ),
-          
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       "Sudah punya akun?",
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                     TextButton(
                       onPressed: () {
@@ -190,7 +192,6 @@ class _PostApiScreenState extends State<PostApiScreen> {
           image: AssetImage("assets/images/backgroundregister.jpg"),
           fit: BoxFit.cover,
         ),
-        
       ),
     );
   }

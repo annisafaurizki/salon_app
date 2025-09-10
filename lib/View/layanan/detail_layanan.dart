@@ -4,7 +4,7 @@ import 'package:app_salon_projek/view/booking/form_booking.dart';
 import 'package:flutter/material.dart';
 
 class GlowiesColors {
-  static const Color roseGold = Color(0xFFB76E79);
+  static const Color roseGold = Color(0xFF443627);
   static const Color warmGold = Color(0xFFE5B39B);
   static const Color offWhite = Color(0xFFF0F0F0);
   static const Color lightGray = Color(0xFFE0E0E0);
@@ -31,6 +31,7 @@ class _DetailLayananState extends State<DetailLayanan> {
           "Detail Layanan",
           style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
         ),
+
         backgroundColor: Colors.white,
         elevation: 1,
         iconTheme: const IconThemeData(color: Colors.black87),
@@ -53,7 +54,6 @@ class _DetailLayananState extends State<DetailLayanan> {
 
             const SizedBox(height: 20),
 
-            
             Text(
               isiLayanan.name ?? "",
               style: const TextStyle(
@@ -65,7 +65,6 @@ class _DetailLayananState extends State<DetailLayanan> {
 
             const SizedBox(height: 8),
 
-            
             Row(
               children: const [
                 Icon(Icons.star, color: Colors.amber, size: 20),
@@ -83,7 +82,6 @@ class _DetailLayananState extends State<DetailLayanan> {
 
             const SizedBox(height: 16),
 
-            
             Text(
               isiLayanan.description ?? "Tidak ada deskripsi layanan",
               style: const TextStyle(
@@ -95,10 +93,13 @@ class _DetailLayananState extends State<DetailLayanan> {
 
             const SizedBox(height: 24),
 
-            
             Row(
               children: [
-                const Icon(Icons.timer, color: GlowiesColors.roseGold, size: 20), // Warna baru
+                const Icon(
+                  Icons.timer,
+                  color: GlowiesColors.roseGold,
+                  size: 20,
+                ), // Warna baru
                 const SizedBox(width: 6),
                 Text(
                   "Estimasi durasi: 45 menit",
@@ -109,7 +110,6 @@ class _DetailLayananState extends State<DetailLayanan> {
 
             const SizedBox(height: 20),
 
-            
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -129,9 +129,10 @@ class _DetailLayananState extends State<DetailLayanan> {
                   const Text(
                     "Harga",
                     style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w500),
+                      fontSize: 16,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   Text(
                     "Rp ${isiLayanan.price}",
@@ -147,31 +148,38 @@ class _DetailLayananState extends State<DetailLayanan> {
 
             const SizedBox(height: 30),
 
-            
             const Text(
               "Kenapa memilih layanan ini?",
               style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
             const SizedBox(height: 8),
             const Text(
               "✦ Ditangani oleh profesional berpengalaman\n"
               "✦ Menggunakan peralatan steril & aman\n"
               "✦ Banyak pelanggan puas dengan hasilnya",
-              style: TextStyle(fontSize: 14, color: Colors.black54, height: 1.5),
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black54,
+                height: 1.5,
+              ),
             ),
 
             const SizedBox(height: 30),
 
-            
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  context.push(BookingFormPage(serviceId: isiLayanan.id!,
-                                     serviceName: isiLayanan.name ?? "Layanan",
-                                     servicePrice: isiLayanan.price ?? "0",));
+                  context.push(
+                    BookingFormPage(
+                      serviceId: isiLayanan.id!,
+                      serviceName: isiLayanan.name ?? "Layanan",
+                      servicePrice: isiLayanan.price ?? "0",
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: GlowiesColors.roseGold, // Warna baru

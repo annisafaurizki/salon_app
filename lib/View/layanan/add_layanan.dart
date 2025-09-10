@@ -6,9 +6,8 @@ import 'package:app_salon_projek/view/layanan/list_layanan.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-
 class GlowiesColors {
-  static const Color roseGold = Color(0xFFB76E79);
+  static const Color roseGold = Color(0xFF443627);
   static const Color offWhite = Color(0xFFF0F0F0);
   static const Color darkText = Color(0xFF333333);
   static const Color lightGray = Color(0xFFE0E0E0);
@@ -42,8 +41,9 @@ class _TambahLayananState extends State<TambahLayanan> {
     if (employeePhoto == null || servicePhoto == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text("Foto karyawan atau layanan harus diisi"),
-            backgroundColor: GlowiesColors.cancelledRed),
+          content: Text("Foto karyawan atau layanan harus diisi"),
+          backgroundColor: GlowiesColors.cancelledRed,
+        ),
       );
       return;
     }
@@ -63,18 +63,20 @@ class _TambahLayananState extends State<TambahLayanan> {
         servicePhoto: File(servicePhoto?.path ?? ""),
       );
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
           content: Text(result.message),
-          backgroundColor: GlowiesColors.confirmedGreen));
+          backgroundColor: GlowiesColors.confirmedGreen,
+        ),
+      );
       context.pop(HalamanDashboard());
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
           content: Text("Gagal menambahkan Layanan: $e"),
-          backgroundColor: GlowiesColors.cancelledRed));
+          backgroundColor: GlowiesColors.cancelledRed,
+        ),
+      );
     } finally {
       setState(() {
         _isLoading = false;
@@ -192,9 +194,10 @@ class _TambahLayananState extends State<TambahLayanan> {
               const Text(
                 "Foto Karyawan",
                 style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: GlowiesColors.darkText),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: GlowiesColors.darkText,
+                ),
               ),
               const SizedBox(height: 8),
               Row(
@@ -219,17 +222,20 @@ class _TambahLayananState extends State<TambahLayanan> {
                           height: 80,
                           fit: BoxFit.cover,
                         )
-                      : const Text("Belum ada foto",
-                          style: TextStyle(color: Colors.grey)),
+                      : const Text(
+                          "Belum ada foto",
+                          style: TextStyle(color: Colors.grey),
+                        ),
                 ],
               ),
               const SizedBox(height: 24),
               const Text(
                 "Foto Layanan",
                 style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: GlowiesColors.darkText),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: GlowiesColors.darkText,
+                ),
               ),
               const SizedBox(height: 8),
               Row(
@@ -254,13 +260,19 @@ class _TambahLayananState extends State<TambahLayanan> {
                           height: 80,
                           fit: BoxFit.cover,
                         )
-                      : const Text("Belum ada foto",
-                          style: TextStyle(color: Colors.grey)),
+                      : const Text(
+                          "Belum ada foto",
+                          style: TextStyle(color: Colors.grey),
+                        ),
                 ],
               ),
               const SizedBox(height: 32),
               _isLoading
-                  ? const Center(child: CircularProgressIndicator(color: GlowiesColors.roseGold))
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: GlowiesColors.roseGold,
+                      ),
+                    )
                   : SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -286,9 +298,8 @@ class _TambahLayananState extends State<TambahLayanan> {
     );
   }
 
-  
   void pickEmployeePhoto() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
         employeePhoto = image;
@@ -297,7 +308,7 @@ class _TambahLayananState extends State<TambahLayanan> {
   }
 
   void pickServicePhoto() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
         servicePhoto = image;
