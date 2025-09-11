@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class GlowiesColors {
-  static const Color roseGold = Color(0xFF443627);
+  static const Color roseGold = Color(0xFFB76E79);
   static const Color offWhite = Color(0xFFF0F0F0);
   static const Color darkText = Color(0xFF333333);
   static const Color lightGray = Color(0xFFE0E0E0);

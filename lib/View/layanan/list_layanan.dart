@@ -5,12 +5,13 @@ import 'package:app_salon_projek/model/layanan/get_layanan_model.dart';
 import 'package:app_salon_projek/view/layanan/add_layanan.dart';
 import 'package:app_salon_projek/view/layanan/detail_layanan.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class GlowiesColors {
-  static const Color roseGold = Color(0xFFE6CFA9);
+  static const Color roseGold = Color(0xFFB76E79);
   static const Color warmGold = Color(0xFFE5B39B);
   static const Color offWhite = Color(0xFFF0F0F0);
-  static const Color lightGray = Color(0xFF443627);
+  static const Color lightGray = Color(0xFFE0E0E0);
 }
 
 class HalamanDashboard extends StatefulWidget {
@@ -53,6 +54,24 @@ class _HalamanDashboardState extends State<HalamanDashboard> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("❌ Error: $e")));
+    }
+  }
+
+  String _formatBookingPrice(dynamic price) {
+    try {
+      if (price == null) return 'Rp 0';
+      final numericValue = double.tryParse(price.toString());
+      if (numericValue != null) {
+        final format = NumberFormat.currency(
+          locale: 'id_ID',
+          symbol: 'Rp ',
+          decimalDigits: 0,
+        );
+        return format.format(numericValue);
+      }
+      return 'Rp 0';
+    } catch (e) {
+      return 'Rp 0';
     }
   }
 
@@ -164,9 +183,9 @@ class _HalamanDashboardState extends State<HalamanDashboard> {
                             ),
                           ),
                           subtitle: Text(
-                            "Rp ${s.price}",
+                            _formatBookingPrice(s.price),
                             style: const TextStyle(
-                              color: GlowiesColors.lightGray,
+                              color: GlowiesColors.roseGold,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

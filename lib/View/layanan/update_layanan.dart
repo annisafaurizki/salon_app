@@ -4,6 +4,7 @@ import 'package:app_salon_projek/API/layanan_service.dart';
 import 'package:app_salon_projek/model/layanan/get_layanan_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class UpdateLayanan extends StatefulWidget {
   final DataLayanan layanan;
@@ -29,7 +30,7 @@ class _UpdateLayananState extends State<UpdateLayanan> {
   bool _isLoading = false;
 
   // Color palette
-  static const Color roseGold = Color(0xFF443627);
+  static const Color roseGold = Color(0xFFB76E79);
   static const Color offWhite = Color(0xFFF0F0F0);
   static const Color darkText = Color(0xFF333333);
   static const Color lightGray = Color(0xFFE0E0E0);
@@ -87,6 +88,24 @@ class _UpdateLayananState extends State<UpdateLayanan> {
     }
   }
 
+  String _formatBookingPrice(dynamic price) {
+    try {
+      if (price == null) return 'Rp 0';
+      final numericValue = double.tryParse(price.toString());
+      if (numericValue != null) {
+        final format = NumberFormat.currency(
+          locale: 'id_ID',
+          symbol: 'Rp ',
+          decimalDigits: 0,
+        );
+        return format.format(numericValue);
+      }
+      return 'Rp 0';
+    } catch (e) {
+      return 'Rp 0';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,7 +152,6 @@ class _UpdateLayananState extends State<UpdateLayanan> {
                           controller: priceController,
                           label: "Harga",
                           icon: Icons.money,
-                          keyboardType: TextInputType.number,
                         ),
                         const SizedBox(height: 16),
                         _buildTextField(

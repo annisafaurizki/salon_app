@@ -4,7 +4,7 @@ import 'package:app_salon_projek/view/booking/form_booking.dart';
 import 'package:flutter/material.dart';
 
 class GlowiesColors {
-  static const Color roseGold = Color(0xFF443627);
+  static const Color roseGold = Color(0xFFB76E79);
   static const Color warmGold = Color(0xFFE5B39B);
   static const Color offWhite = Color(0xFFF0F0F0);
   static const Color lightGray = Color(0xFFE0E0E0);

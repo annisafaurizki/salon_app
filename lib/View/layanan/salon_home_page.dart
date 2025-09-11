@@ -199,7 +199,7 @@ class _SalonHomePageState extends State<SalonHomePage> {
                 onChanged: (val) => setState(() => searchQuery = val),
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  hintText: "Cari layanan, tanggal, atau status...",
+                  hintText: "Cari Riwayat",
                   hintStyle: const TextStyle(color: Colors.grey),
                   filled: true,
                   fillColor: Colors.white,

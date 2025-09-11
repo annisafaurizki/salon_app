@@ -36,9 +36,7 @@ class _HalamanUtamaDuaState extends State<HalamanUtamaDua> {
         _errorMessage = null;
       });
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Data Berhasil Diambil")));
+      ScaffoldMessenger.of(context);
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -121,16 +119,11 @@ class _HalamanUtamaDuaState extends State<HalamanUtamaDua> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          // Header dengan gradient
           Container(
             height: 180,
             width: double.infinity,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [GlowiesColors.roseGold, GlowiesColors.warmGold],
-              ),
+              color: const Color.fromARGB(255, 245, 209, 200),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
@@ -394,6 +387,7 @@ class _HalamanUtamaDuaState extends State<HalamanUtamaDua> {
               ),
               const SizedBox(height: 16),
               TextField(
+                readOnly: true,
                 controller: emailController,
                 decoration: const InputDecoration(
                   labelText: 'Email',

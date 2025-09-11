@@ -55,6 +55,7 @@ class _PostApiScreenState extends State<PostApiScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Pendaftaran berhasil")));
+      context.push(LoginAPIScreen());
       PreferenceHandler.saveToken(user?.data.token.toString() ?? "");
       print(user?.toJson());
     } catch (e) {
